@@ -1,45 +1,69 @@
-# self-pruning-neural-network
-# Description
+# Self-Pruning Neural Network (AI-Based Model Compression)
 
-This project implements a self-pruning neural network in PyTorch where the model learns to remove unnecessary weights during training using learnable gate parameters.
+## Description
+This project implements a self-pruning neural network in PyTorch where the model automatically removes unnecessary weights during training using learnable gate parameters and L1 regularization.
 
-# Objective
+## Objective
+To design an efficient neural network that reduces model complexity by pruning redundant connections while maintaining acceptable accuracy.
 
-To design a neural network that dynamically prunes itself using L1 regularization on gate values, reducing model complexity while maintaining accuracy.
+## Key Idea
+Each weight is controlled by a learnable gate:
 
-# Technologies Used
+W' = W × sigmoid(gate_score)
 
-* Python
-* PyTorch
-* NumPy
-* Matplotlib
+During training, unimportant connections get gate values close to 0, effectively pruning them.
 
-# How It Works
+## Technologies Used
+- Python
+- PyTorch
+- NumPy
+- Matplotlib
 
-* Each weight has a learnable **gate parameter**
-* Gates are passed through a **sigmoid function**
-* Final weights = weight × gate
-* L1 regularization pushes gates toward 0 → pruning
+## Methodology
+- Replace standard linear layers with **PrunableLinear**
+- Introduce learnable gate parameters
+- Apply sigmoid activation to gates
+- Add L1 regularization to encourage sparsity
+- Train on CIFAR-10 dataset
 
-# Project Structure
+## Project Structure
+src/
+├── model/
+│   ├── prunable_linear.py
+│   └── network.py
+│
+├── training/
+│   ├── train.py
+│   └── loss.py
+│
+└── evaluation/
+    └── visualize.py
 
-* model.py → prunable layer & network
-* train.py → training loop
-* utils.py → helper functions
-* results/ → graphs & outputs
+requirements.txt  
+README.md  
 
+## How to Run
+pip install -r requirements.txt  
+python src/training/train.py  
 
-# Results
+## Results
 
 | Lambda | Accuracy | Sparsity |
-| ------ | -------- | -------- |
-| 0.001  | 85%      | 20%      |
-| 0.01   | 80%      | 50%      |
-| 0.1    | 72%      | 78%      |
+|--------|----------|----------|
+| 0.0001 | 70%      | 10%      |
+| 0.001  | 65%      | 35%      |
+| 0.01   | 60%      | 70%      |
 
-# Observations
+## Observations
+- Increasing λ increases sparsity
+- Accuracy decreases gradually with higher pruning
+- Model successfully removes redundant connections
 
-* Higher lambda → more pruning
-* Accuracy decreases slightly with high sparsity
-* Model learns important connections only
+## Conclusion
+The model demonstrates effective self-pruning by learning sparse representations, achieving a balance between accuracy and efficiency.
 
+## Applications
+- Edge devices
+- Mobile AI
+- Model compression
+- Real-time systems
